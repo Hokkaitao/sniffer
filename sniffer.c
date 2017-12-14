@@ -285,7 +285,7 @@ void
 print_payload(const u_char *payload, int len)
 {
 
-		if(size_payload > SNAP_LEN) {
+		if(len > SNAP_LEN) {
 			return;
 		}
         int len_rem = len;
