@@ -285,6 +285,9 @@ void
 print_payload(const u_char *payload, int len)
 {
 
+		if(size_payload > SNAP_LEN) {
+			return;
+		}
         int len_rem = len;
         int line_width = 16;                        /* 每行的字节数 | number of bytes per line */
         int line_len;
