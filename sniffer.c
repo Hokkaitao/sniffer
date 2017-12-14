@@ -1136,7 +1136,8 @@ end:
 }
 
 void process_quit_connect(ONECONNECT con) {
-	if(con && con->s && con->s->packet_type == PACKAGE_TYPE_QUIT) {
+	if(con && con->s && 
+	(con->direction == DirectionToMySQL && con->s->packet_type == PACKAGE_TYPE_QUIT)) {
 		close_connect(con);
 	}
 }
