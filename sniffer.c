@@ -1182,7 +1182,7 @@ u_short mysql_port = 3306;
 char device[MAX_ARGS_LEN] = {""};
 /* 过滤表达示          | filter expression [3] */
 char filter_exp[MAX_FILTER_EXP] = {""};
-int addition = 0;
+int addition = 8;
 
 void
 got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *packet)
