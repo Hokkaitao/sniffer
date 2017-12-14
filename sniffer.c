@@ -1289,9 +1289,9 @@ got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *packet)
 	}
 	
 	/* TCP 标志进行包过滤: RST/FIN/PUSH */
-	//if(!filter_tcp_flag(tcp->th_flags)) {
-	//	return;
-	//}
+	if(!filter_tcp_flag(tcp->th_flags)) {
+		return;
+	}
 
         /* 显示源IP和目的IP
            print source and destination IP addresses */
