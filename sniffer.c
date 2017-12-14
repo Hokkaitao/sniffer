@@ -761,6 +761,9 @@ void print_tcp_flag(const struct sniff_tcp *tcp) {
 	int ece = th_flags & 0x40;
 	int cwr = th_flags & 0x80;
 	printf("====3 TCP Flags====\n");
+	char cur_time[64] = {""};
+	getCurrentTime(cur_time);
+	printf("timestamp: %s\n", cur_time);
 	printf("FIN:%d SYN:%d RST:%d PUSH:%d ACK:%d URG:%d\n", 
 		fin>0, syn>0, rst>0, push>0, ack>0, urg>0);
 	
