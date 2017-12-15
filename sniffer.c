@@ -900,8 +900,29 @@ char *getSQL(const char *payload) {
 }
 int getCMD(const char *payload) {
 	char ret = -1;
-	ret = payload[4];
-	return (int)ret;
+	char *cur = NULL;
+	if(payload == NULL) {
+		return ret;
+	}
+	if(size_payload < 4) {
+		return ret;
+	}
+	long len = uint3korr(payload);
+	if(len < 1 || size_payload <5) {
+		return ret;
+	}
+	if((len + 4) != size_payload) {
+		return ret;
+	}
+	cur = (char *)malloc(4);
+	if(cur == NULL) {
+		return ret;
+	}
+	memset(cur, 0, 4);
+	memcpy(cur, (payload + 4), 1);
+	ret = *cur;
+	if(cur) free(cur);
+	return ret;	
 }
 
 gint list_compare_connect(gconstpointer a, gconstpointer b) {
@@ -1004,6 +1025,12 @@ ONECONNECT  process_application(ONECONNECT con, const char *payload, int size_pa
 
 	//应用层数据包长度过滤
 	if(size_payload < 4) return;
+
+	//过滤客户端发送的非MySQL数据包
+	int sql_packet_len = uint3korr(payload);
+	if((con->direction == DirectionToMySQL) && ((sql_packet_len + 4) !=  size_payload)) {
+		return NULL;
+	}
 
 	session_state old_state = con->s->state;
 
@@ -1149,6 +1176,7 @@ void show_session_info(ONECONNECT con) {
 	(con->s->packet_type == PACKAGE_TYPE_QUIT)
 	)) {
 		if(con->s->sql == NULL) return;
+		if(con->s->cmd < 0) return;
 		char curtime[64] = {""};
 		getCurrentTime(curtime);
 
