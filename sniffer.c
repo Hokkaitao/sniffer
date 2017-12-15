@@ -1169,6 +1169,16 @@ void process_quit_connect(ONECONNECT con) {
 	}
 }
 
+void process_reinit_connect(ONECONNECT con) {
+	if(con && con->s && con->s->packet_type == PACKAGE_TYPE_RESULT_FINAL) {
+		//重置sql
+		if((con->s->sql != NULL) && (con->s->sql->len > 0) ) {
+			g_string_free(con->s->sql, TRUE);
+			con->s->sql = g_string_new(NULL);
+		}
+	}
+}
+
 void show_session_info(ONECONNECT con) {
 	//打印SQL与执行时间
 	if(con && con->s && (
@@ -1347,6 +1357,7 @@ got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *packet)
 
 	//收尾工作
 	process_quit_connect(con);
+	process_reinit_connect(con);
 
 /*
 		if(size_payload > 0) {
