@@ -44,7 +44,7 @@
 #define PACKAGE_TYPE_COMMAND -6
 #define PACKAGE_TYPE_RESULT -7
 #define PACKAGE_TYPE_RESULT_FINAL -8
-#define PACKAGE_TYPE_QUIT -8
+#define PACKAGE_TYPE_QUIT -9
 
 /* parse number in packet  */
 #define uint2korr(A)    (unsigned int) (((unsigned int) ((unsigned char) (A)[0])) +\
