@@ -898,7 +898,7 @@ char *getSQL(const char *payload) {
 	memcpy(sql, (payload + 5), len - 1);
 	return sql;
 }
-int getCMD(const char *payload) {
+int getCMD(const char *payload, int size_payload) {
 	char ret = -1;
 	char *cur = NULL;
 	if(payload == NULL) {
@@ -1128,12 +1128,12 @@ ONECONNECT  process_application(ONECONNECT con, const char *payload, int size_pa
 		if(con->s->sql == NULL) con->s->sql = g_string_new(NULL);
 		g_string_append(con->s->sql, my_sql);
 		if(my_sql) free(my_sql);
-		con->s->cmd = getCMD(payload);
+		con->s->cmd = getCMD(payload, size_payload);
 		if(con->s->cmd > COM_END || con->s->cmd <0) con->s->cmd = -1;
 		con->s->latency = 0;
 	}
 	if(con->direction == DirectionToMySQL && packet_type == PACKAGE_TYPE_QUIT) {
-		con->s->cmd = getCMD(payload);
+		con->s->cmd = getCMD(payload, size_payload);
 		con->s->latency = 0;
 	}
 	//处理时间
