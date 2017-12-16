@@ -925,9 +925,11 @@ int getCMD(const char *payload, int size_payload) {
 	if(len < 1 || size_payload <5) {
 		return ret;
 	}
+/*
 	if((len + 4) != size_payload) {
 		return ret;
 	}
+*/
 	cur = (char *)malloc(4);
 	if(cur == NULL) {
 		return ret;
@@ -1149,8 +1151,10 @@ ONECONNECT  process_application(ONECONNECT con, const char *payload, int size_pa
 		if(con->s->sql == NULL) con->s->sql = g_string_new(NULL);
 		g_string_append(con->s->sql, my_sql);
 		if(my_sql) free(my_sql);
-		con->s->cmd = getCMD(payload, size_payload);
-		if(con->s->cmd > COM_END || con->s->cmd <0) con->s->cmd = -1;
+		if(con->s->cmd <0) {
+			con->s->cmd = getCMD(payload, size_payload);
+			if(con->s->cmd > COM_END || con->s->cmd <0) con->s->cmd = -1;
+		}
 		con->s->latency = 0;
 		//提取packet_id
 		con->s->packet_id = get_packet_id(payload, size_payload);
