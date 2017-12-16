@@ -661,10 +661,13 @@ void getCurrentTime(char *dst) {
 	if(dst == NULL) return;
 	struct timeval tv;
 	struct timezone tz;
-	struct tm *p;
+	struct tm *p = NULL;
 	
 	gettimeofday(&tv, &tz);
 	p = localtime(&tv.tv_sec);
+	if(p == NULL) {
+		return
+	}
 	sprintf(dst, "%d-%d-%d %d:%d:%d.%ld", 1900+p->tm_year, 1+p->tm_mon, p->tm_mday, p->tm_hour, p->tm_min, p->tm_sec, tv.tv_usec);
 }
 
@@ -1263,10 +1266,22 @@ void show_session_info(ONECONNECT con) {
 		u_short sport= ntohs(con->s_port);
 		u_short dport= ntohs(con->d_port);
 
+		char *host = NULL;
+		char sip[16] = {""};
+		char dip[16] = {""};
+		host = inet_ntoa(con->s_ip);
+		if(host == NULL || strlen(host)>15) return;
+		memcpy(sip, host, strlen(host));
+		host = NULL;
+
+		host = inet_ntoa(con->d_ip);
+		if(host == NULL || strlen(host)>15) return;
+		memcpy(dip, host, strlen(host));
+
 		printf("====4 App Layer====\n");
 		printf("timestamp:   %s\n", curtime);
-		printf("src host:    %s:%d\n", inet_ntoa(con->s_ip), sport);
-		printf("dst host:    %s:%d\n", inet_ntoa(con->d_ip), dport);
+		printf("src host:    %s:%d\n", sip, sport);
+		printf("dst host:    %s:%d\n", dip, dport);
 		printf("cmd:         %s\n", server_cmd[con->s->cmd]);
 	//	printf("packet_id:   %d\n", con->s->packet_id);
 		printf("latency:     %ld (microsecond)\n", con->s->latency>0?con->s->latency:0);
