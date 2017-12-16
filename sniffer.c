@@ -923,7 +923,7 @@ char *getSQL(const char *payload, int size_payload) {
 }
 int getCMD(const char *payload, int size_payload) {
 	char ret = -1;
-	char *cur = NULL;
+	char cur[4] = {""};
 	if(payload == NULL) {
 		return ret;
 	}
@@ -939,14 +939,12 @@ int getCMD(const char *payload, int size_payload) {
 		return ret;
 	}
 */
-	cur = (char *)malloc(4);
 	if(cur == NULL) {
 		return ret;
 	}
 	memset(cur, 0, 4);
 	memcpy(cur, (payload + 4), 1);
 	ret = *cur;
-	if(cur) free(cur);
 	return ret;	
 }
 
