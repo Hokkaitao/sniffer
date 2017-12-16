@@ -904,12 +904,15 @@ char *getSQL(const char *payload) {
  */
 	int ret = 0;
 	if(payload == NULL) {
-		return;
+		return NULL;
 	}
-	long len = uint3korr(payload);
-	char *sql = (char *)malloc(len);
-	memset(sql, 0, len);
-	memcpy(sql, (payload + 5), len - 1);
+	long len = size_payload - 5;
+	if(len <= 0) {
+		return NULL;
+	}
+	char *sql = (char *)malloc(len + 1);
+	memset(sql, 0, len + 1);
+	memcpy(sql, (payload + 5), len);
 	return sql;
 }
 int getCMD(const char *payload, int size_payload) {
