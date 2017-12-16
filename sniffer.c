@@ -699,6 +699,8 @@ typedef struct _session {
 	
 	long latency;
 	int packet_type;
+
+	int packet_id;
 }session, *SESSION;
 
 SESSION newSession() {
@@ -712,6 +714,8 @@ SESSION newSession() {
 	s->sql = g_string_new(NULL);	
 	s->latency = -1;
 	s->packet_type = 0;
+
+	s->packet_id = -1;
 	return s;
 }
 
@@ -1124,6 +1128,7 @@ ONECONNECT  process_application(ONECONNECT con, const char *payload, int size_pa
 		if(con->s->packet_type == PACKAGE_TYPE_RESULT_FINAL) {
 			if(con->s->sql) g_string_free(con->s->sql, TRUE);
 			con->s->sql = NULL;
+			con->s->packet_id = -1;
 		}
 		if(con->s->sql == NULL) con->s->sql = g_string_new(NULL);
 		g_string_append(con->s->sql, my_sql);
@@ -1131,6 +1136,8 @@ ONECONNECT  process_application(ONECONNECT con, const char *payload, int size_pa
 		con->s->cmd = getCMD(payload, size_payload);
 		if(con->s->cmd > COM_END || con->s->cmd <0) con->s->cmd = -1;
 		con->s->latency = 0;
+		//提取packet_id
+		con->s->packet_id = get_packet_id(payload, size_payload);
 	}
 	if(con->direction == DirectionToMySQL && packet_type == PACKAGE_TYPE_QUIT) {
 		con->s->cmd = getCMD(payload, size_payload);
@@ -1195,6 +1202,7 @@ void show_session_info(ONECONNECT con) {
 		printf("src host:    %s:%d\n", inet_ntoa(con->s_ip), ntohs(con->s_port));
 		printf("dst host:    %s:%d\n", inet_ntoa(con->d_ip), ntohs(con->d_port));
 		printf("cmd:         %s\n", server_cmd[con->s->cmd]);
+		printf("packet_id:   %d\n", con->s->packet_id);
 		printf("latency:     %ld (microsecond)\n", con->s->latency>0?con->s->latency:0);
 		printf("sql:         %s\n", con->s->sql->str);
 		//printf("state:       %d\n", con->s->state);
