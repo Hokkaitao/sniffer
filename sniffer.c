@@ -666,7 +666,7 @@ void getCurrentTime(char *dst) {
 	gettimeofday(&tv, &tz);
 	p = localtime(&tv.tv_sec);
 	if(p == NULL) {
-		return
+		return;
 	}
 	sprintf(dst, "%d-%d-%d %d:%d:%d.%ld", 1900+p->tm_year, 1+p->tm_mon, p->tm_mday, p->tm_hour, p->tm_min, p->tm_sec, tv.tv_usec);
 }
