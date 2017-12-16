@@ -1142,7 +1142,7 @@ ONECONNECT  process_application(ONECONNECT con, const char *payload, int size_pa
 	//提取SQL和CMD
 	char *my_sql = NULL;
 	if(packet_type == PACKAGE_TYPE_COMMAND) {
-		if(con->s->multi_tcp_packet == 0) {
+		if(con->s && con->s->multi_tcp_packet == 0) {
 			my_sql = getSQL(payload);	
 			if(con->s->packet_type == PACKAGE_TYPE_RESULT_FINAL) {
 				if(con->s->sql) g_string_free(con->s->sql, TRUE);
@@ -1152,9 +1152,11 @@ ONECONNECT  process_application(ONECONNECT con, const char *payload, int size_pa
 			if(con->s->sql == NULL) con->s->sql = g_string_new(NULL);
 			g_string_append(con->s->sql, my_sql);
 			if(my_sql) free(my_sql);
-		} else {
+		} else if(con->s && con->s->multi_tcp_packet == 1) {
 			if(con->s->sql == NULL) con->s->sql = g_string_new(NULL);
 			g_string_append(con->s->sql, payload);
+		} else {
+			goto end;		
 		}
 		if(con->s->cmd <0) {
 			con->s->cmd = getCMD(payload, size_payload);
