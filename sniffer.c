@@ -1252,12 +1252,12 @@ void show_session_info(ONECONNECT con) {
 		printf("src host:    %s:%d\n", inet_ntoa(con->s_ip), ntohs(con->s_port));
 		printf("dst host:    %s:%d\n", inet_ntoa(con->d_ip), ntohs(con->d_port));
 		printf("cmd:         %s\n", server_cmd[con->s->cmd]);
-		printf("packet_id:   %d\n", con->s->packet_id);
+	//	printf("packet_id:   %d\n", con->s->packet_id);
 		printf("latency:     %ld (microsecond)\n", con->s->latency>0?con->s->latency:0);
-		printf("total_len:   %ld\n", con->s->total_len);
-		printf("received_len:%ld\n", con->s->received_len);
-		printf("multi_mysql: %ld\n", con->s->multi_mysql_packet);
-		printf("multi_tcp:   %ld\n", con->s->multi_tcp_packet);
+	//	printf("total_len:   %ld\n", con->s->total_len);
+	//	printf("received_len:%ld\n", con->s->received_len);
+	//	printf("multi_mysql: %ld\n", con->s->multi_mysql_packet);
+	//	printf("multi_tcp:   %ld\n", con->s->multi_tcp_packet);
 		printf("sql:         %s\n", con->s->sql->str);
 		//printf("state:       %d\n", con->s->state);
 		//printf("packet_type: %d\n", con->s->packet_type);
