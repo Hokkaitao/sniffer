@@ -701,6 +701,10 @@ typedef struct _session {
 	int packet_type;
 
 	int packet_id;
+	long total_len;
+	long received_len;
+	int multi_mysql_packet;
+	int multi_tcp_packet;
 }session, *SESSION;
 
 SESSION newSession() {
@@ -716,6 +720,10 @@ SESSION newSession() {
 	s->packet_type = 0;
 
 	s->packet_id = -1;
+	s->total_len = 0;
+	s->received_len = 0;
+	s->multi_mysql_packet = 1;
+	s->multi_tcp_packet = 1;
 	return s;
 }
 
@@ -1138,6 +1146,25 @@ ONECONNECT  process_application(ONECONNECT con, const char *payload, int size_pa
 		con->s->latency = 0;
 		//提取packet_id
 		con->s->packet_id = get_packet_id(payload, size_payload);
+		//提取数据包长度
+		long total = uint3korr(payload);
+		if(con->s->multi_mysql_packet) {
+			con->s->total_len += uint3korr(payload);
+		}
+		if(total == 0xffffff) {
+			con->s->multi_mysql_packet = 1;
+		} else {
+			con->s->multi_mysql_packet = 0;
+		}
+		
+		if(con->s->multi_tcp_packet) {
+			con->s->received_len += (size_payload - 4);
+		}
+		if(con->s->total_len > con->s->received_len) {
+			con->s->multi_tcp_packet = 1;
+		} else {
+			con->s->multi_tcp_packet = 0;
+		}
 	}
 	if(con->direction == DirectionToMySQL && packet_type == PACKAGE_TYPE_QUIT) {
 		con->s->cmd = getCMD(payload, size_payload);
@@ -1204,6 +1231,10 @@ void show_session_info(ONECONNECT con) {
 		printf("cmd:         %s\n", server_cmd[con->s->cmd]);
 		printf("packet_id:   %d\n", con->s->packet_id);
 		printf("latency:     %ld (microsecond)\n", con->s->latency>0?con->s->latency:0);
+		printf("total_len:   %ld\n", con->s->total_len);
+		printf("received_len:%ld\n", con->s->received_len);
+		printf("multi_mysql: %ld\n", con->s->multi_mysql_packet);
+		printf("multi_tcp:   %ld\n", con->s->multi_tcp_packet);
 		printf("sql:         %s\n", con->s->sql->str);
 		//printf("state:       %d\n", con->s->state);
 		//printf("packet_type: %d\n", con->s->packet_type);
