@@ -1255,15 +1255,18 @@ void show_session_info(ONECONNECT con) {
 	(con->s->latency > 0 && con->s->packet_type == PACKAGE_TYPE_RESULT_FINAL) || 
 	(con->s->packet_type == PACKAGE_TYPE_QUIT)
 	)) {
-		if(con->s->sql == NULL) return;
-		if(con->s->cmd < 0) return;
+		if(con->s->sql == NULL || con->s->sql->len <= 0) return;
+		if(con->s->cmd < 0 || con->s->cmd >= COM_END) return;
 		char curtime[64] = {""};
 		getCurrentTime(curtime);
 
+		u_short sport= ntohs(con->s_port)
+		u_short dport= ntohs(con->d_port)
+
 		printf("====4 App Layer====\n");
 		printf("timestamp:   %s\n", curtime);
-		printf("src host:    %s:%d\n", inet_ntoa(con->s_ip), ntohs(con->s_port));
-		printf("dst host:    %s:%d\n", inet_ntoa(con->d_ip), ntohs(con->d_port));
+		printf("src host:    %s:%d\n", inet_ntoa(con->s_ip), sport);
+		printf("dst host:    %s:%d\n", inet_ntoa(con->d_ip), dport);
 		printf("cmd:         %s\n", server_cmd[con->s->cmd]);
 	//	printf("packet_id:   %d\n", con->s->packet_id);
 		printf("latency:     %ld (microsecond)\n", con->s->latency>0?con->s->latency:0);
@@ -1274,8 +1277,6 @@ void show_session_info(ONECONNECT con) {
 		printf("sql:         %s\n", con->s->sql->str);
 		//printf("state:       %d\n", con->s->state);
 		//printf("packet_type: %d\n", con->s->packet_type);
-
-		con->s->latency = -1;
 	}
 }
 
