@@ -24,6 +24,8 @@
    default snap length (maximum bytes per packet to capture) */
 #define SNAP_LEN 1518
 
+#define MTU 1448 
+
 /* 以太网头部14个字节
    ethernet headers are always exactly 14 bytes [1] */
 #define SIZE_ETHERNET 14
@@ -1036,13 +1038,17 @@ ONECONNECT  process_application(ONECONNECT con, const char *payload, int size_pa
 	if(con == NULL) return;
 
 	//应用层数据包长度过滤
-	if(size_payload < 4) return;
+	if((con->direction == DirectionToMySQL) && con->s && con->s->multi_tcp_packet) {
+	
+	} else if(size_payload < 4) return;
 
 	//过滤客户端发送的非MySQL数据包
+	/*
 	int sql_packet_len = uint3korr(payload);
 	if((con->direction == DirectionToMySQL) && ((sql_packet_len + 4) !=  size_payload)) {
 		return NULL;
 	}
+	*/
 
 	session_state old_state = con->s->state;
 
@@ -1371,7 +1377,9 @@ got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *packet)
 	}
 	
 	/* TCP 标志进行包过滤: RST/FIN/PUSH */
-	if(!filter_tcp_flag(tcp->th_flags)) {
+	if(size_payload == MTU) {
+		
+	} else if(!filter_tcp_flag(tcp->th_flags)) {
 		return;
 	}
 
