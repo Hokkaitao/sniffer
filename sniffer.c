@@ -1073,7 +1073,7 @@ ONECONNECT  process_application(ONECONNECT con, const char *payload, int size_pa
 		if(is_handshake(payload, size_payload) == PACKAGE_TYPE_HANDSHAKE) {
 			packet_type = PACKAGE_TYPE_HANDSHAKE;
 			//printf("::PACKAGE_TYPE_HANDSHAKE\n");
-		} else if(is_auth_OK(payload, size_payload) == PACKAGE_TYPE_AUTH_OK) {
+		} else if((is_auth_OK(payload, size_payload) == PACKAGE_TYPE_AUTH_OK) && con->s && con->s->state == AuthStage) {
 			packet_type = PACKAGE_TYPE_AUTH_OK;
 			//printf("::PACKAGE_TYPE_AUTH_OK\n");
 		} else if(is_auth_ERR(payload, size_payload) == PACKAGE_TYPE_AUTH_ERR) {
