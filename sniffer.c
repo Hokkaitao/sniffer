@@ -725,7 +725,7 @@ SESSION newSession() {
 	s->total_len = 0;
 	s->received_len = 0;
 	s->multi_mysql_packet = 1;
-	s->multi_tcp_packet = 1;
+	s->multi_tcp_packet = 0;
 	return s;
 }
 
@@ -1107,7 +1107,9 @@ ONECONNECT  process_application(ONECONNECT con, const char *payload, int size_pa
 			state = ResponseWaitingStage;
 		} else if(packet_type == PACKAGE_TYPE_COMMAND && state == InitStage) {
 			state = ResponseWaitingStage;
-		} else if(packet_type == PACKAGE_TYPE_QUIT && state == RequestWaitingStage) {
+		} else if(packet_type == PACKAGE_TYPE_COMMAND && state == ResponseWaitingStage) {
+			state = ResponseWaitingStage;
+		}else if(packet_type == PACKAGE_TYPE_QUIT && state == RequestWaitingStage) {
 			state = QuitStage;
 		} else if(packet_type == PACKAGE_TYPE_QUIT && state == InitStage) {
 			state = QuitStage;
@@ -1163,8 +1165,10 @@ ONECONNECT  process_application(ONECONNECT con, const char *payload, int size_pa
 			con->s->multi_mysql_packet = 0;
 		}
 		
-		if(con->s->multi_tcp_packet) {
+		if(con->s->multi_tcp_packet == 0) {
 			con->s->received_len += (size_payload - 4);
+		} else {
+			con->s->received_len += size_payload;
 		}
 		if(con->s->total_len > con->s->received_len) {
 			con->s->multi_tcp_packet = 1;
@@ -1219,7 +1223,7 @@ void process_reinit_connect(ONECONNECT con) {
 		con->s->total_len = 0;
 		con->s->received_len = 0;
 		con->s->multi_mysql_packet = 1;
-		con->s->multi_tcp_packet = 1;
+		con->s->multi_tcp_packet = 0;
 	}
 }
 
