@@ -1210,6 +1210,10 @@ void process_reinit_connect(ONECONNECT con) {
 			g_string_free(con->s->sql, TRUE);
 			con->s->sql = g_string_new(NULL);
 		}
+		con->s->total_len = 0;
+		con->s->received_len = 0;
+		con->s->multi_mysql_packet = 1;
+		con->s->multi_tcp_packet = 1;
 	}
 }
 
