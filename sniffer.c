@@ -911,7 +911,7 @@ char *getSQL(const char *payload, int size_payload) {
 	char *sql = (char *)malloc(size_payload);
 	if(sql == NULL) return NULL;
 	memset(sql, 0, size_payload);
-	char *cur = payload + 5;
+	const char *cur = payload + 5;
 	if(cur == NULL) {
 		return NULL;
 	}
