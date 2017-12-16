@@ -1194,7 +1194,7 @@ ONECONNECT  process_application(ONECONNECT con, const char *payload, int size_pa
 	//处理时间
 	struct timeval start;
 	struct timeval end;
-	if(packet_type == PACKAGE_TYPE_COMMAND) {
+	if(packet_type == PACKAGE_TYPE_COMMAND && con->s && con->s->multi_tcp_packet ==      0) {
 		gettimeofday(&(con->s->begin), NULL);
 	} else if(packet_type == PACKAGE_TYPE_RESULT_FINAL) {
 		gettimeofday(&end, NULL);
