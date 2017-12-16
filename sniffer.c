@@ -1154,8 +1154,7 @@ ONECONNECT  process_application(ONECONNECT con, const char *payload, int size_pa
 			if(my_sql) free(my_sql);
 		} else {
 			if(con->s->sql == NULL) con->s->sql = g_string_new(NULL);
-			g_string_append(con->s->sql, my_sql);
-			if(my_sql) free(my_sql);
+			g_string_append(con->s->sql, payload);
 		}
 		if(con->s->cmd <0) {
 			con->s->cmd = getCMD(payload, size_payload);
