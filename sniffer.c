@@ -1260,8 +1260,8 @@ void show_session_info(ONECONNECT con) {
 		char curtime[64] = {""};
 		getCurrentTime(curtime);
 
-		u_short sport= ntohs(con->s_port)
-		u_short dport= ntohs(con->d_port)
+		u_short sport= ntohs(con->s_port);
+		u_short dport= ntohs(con->d_port);
 
 		printf("====4 App Layer====\n");
 		printf("timestamp:   %s\n", curtime);
