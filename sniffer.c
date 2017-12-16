@@ -902,7 +902,6 @@ char *getSQL(const char *payload, int size_payload) {
  * ret = 0 数据完整
  * ret = 1 数据位接收完，待接收数据
  */
-	int ret = 0;
 	if(payload == NULL) {
 		return NULL;
 	}
@@ -1153,7 +1152,7 @@ ONECONNECT  process_application(ONECONNECT con, const char *payload, int size_pa
 				con->s->packet_id = -1;
 			}
 			if(con->s->sql == NULL) con->s->sql = g_string_new(NULL);
-			g_string_append(con->s->sql, my_sql);
+			if(my_sql) g_string_append(con->s->sql, my_sql);
 			if(my_sql) free(my_sql);
 		} else if(con->s && con->s->multi_tcp_packet == 1) {
 			if(con->s->sql == NULL) con->s->sql = g_string_new(NULL);
