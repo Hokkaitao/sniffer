@@ -1233,6 +1233,10 @@ void process_reinit_connect(ONECONNECT con) {
 		con->s->received_len = 0;
 		con->s->multi_mysql_packet = 1;
 		con->s->multi_tcp_packet = 0;
+		con->s->cmd = -1;
+		con->s->packet_id = -1;
+		con->s->multi_mysql_packet = 1;
+		con->s->multi_tcp_packet = 0;
 	}
 }
 
