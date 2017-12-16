@@ -898,10 +898,6 @@ void getConnectKey(
 }
 
 char *getSQL(const char *payload, int size_payload) {
-/*
- * ret = 0 数据完整
- * ret = 1 数据位接收完，待接收数据
- */
 	if(payload == NULL) {
 		return NULL;
 	}
@@ -909,8 +905,9 @@ char *getSQL(const char *payload, int size_payload) {
 	if(len <= 0) {
 		return NULL;
 	}
-	char *sql = (char *)malloc(len + 1);
-	memset(sql, 0, len + 1);
+	char *sql = (char *)malloc(size_payload);
+	if(sql == NULL) return NULL;
+	memset(sql, 0, size_payload);
 	memcpy(sql, (payload + 5), len);
 	return sql;
 }
