@@ -897,7 +897,7 @@ void getConnectKey(
 	}
 }
 
-char *getSQL(const char *payload) {
+char *getSQL(const char *payload, int size_payload) {
 /*
  * ret = 0 数据完整
  * ret = 1 数据位接收完，待接收数据
@@ -1146,7 +1146,7 @@ ONECONNECT  process_application(ONECONNECT con, const char *payload, int size_pa
 	char *my_sql = NULL;
 	if(packet_type == PACKAGE_TYPE_COMMAND) {
 		if(con->s && con->s->multi_tcp_packet == 0) {
-			my_sql = getSQL(payload);	
+			my_sql = getSQL(payload, size_payload);	
 			if(con->s->packet_type == PACKAGE_TYPE_RESULT_FINAL) {
 				if(con->s->sql) g_string_free(con->s->sql, TRUE);
 				con->s->sql = NULL;
