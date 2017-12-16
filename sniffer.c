@@ -1076,7 +1076,7 @@ ONECONNECT  process_application(ONECONNECT con, const char *payload, int size_pa
 		} else if((is_auth_OK(payload, size_payload) == PACKAGE_TYPE_AUTH_OK) && con->s && con->s->state == AuthStage) {
 			packet_type = PACKAGE_TYPE_AUTH_OK;
 			//printf("::PACKAGE_TYPE_AUTH_OK\n");
-		} else if(is_auth_ERR(payload, size_payload) == PACKAGE_TYPE_AUTH_ERR) {
+		} else if((is_auth_ERR(payload, size_payload) == PACKAGE_TYPE_AUTH_ERR) && con->s && con->s->state == AuthStage) {
 			packet_type = PACKAGE_TYPE_AUTH_ERR;
 			//printf("::PACKAGE_TYPE_AUTH_ERR\n");
 		} else {
