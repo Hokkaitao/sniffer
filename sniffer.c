@@ -901,6 +901,9 @@ char *getSQL(const char *payload, int size_payload) {
 	if(payload == NULL) {
 		return NULL;
 	}
+	if(size_payload > MTU) {
+		return NULL;
+	}
 	long len = size_payload - 5;
 	if(len <= 0) {
 		return NULL;
@@ -908,7 +911,11 @@ char *getSQL(const char *payload, int size_payload) {
 	char *sql = (char *)malloc(size_payload);
 	if(sql == NULL) return NULL;
 	memset(sql, 0, size_payload);
-	memcpy(sql, (payload + 5), len);
+	char *cur = payload + 5;
+	if(cur == NULL) {
+		return NULL;
+	}
+	memcpy(sql, cur, len);
 	return sql;
 }
 int getCMD(const char *payload, int size_payload) {
