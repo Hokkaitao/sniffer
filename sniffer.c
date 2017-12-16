@@ -1044,12 +1044,12 @@ ONECONNECT  process_application(ONECONNECT con, const char *payload, int size_pa
  * 	ERR Packet
  * 	Result Packet
  */
-	if(con == NULL) return;
+	if(con == NULL) return NULL;
 
 	//应用层数据包长度过滤
 	if((con->direction == DirectionToMySQL) && con->s && con->s->multi_tcp_packet) {
 	
-	} else if(size_payload < 4) return;
+	} else if(size_payload < 4) return NULL;
 
 	//过滤客户端发送的非MySQL数据包
 	/*
